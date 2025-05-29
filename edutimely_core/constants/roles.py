@@ -1,0 +1,5 @@
+
+COORDINATOR = "Coordinador"
+TEACHER = "Docente"
+
+ROLES = [COORDINATOR, TEACHER]
