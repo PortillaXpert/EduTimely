@@ -6,5 +6,5 @@ class PeriodsConfig(AppConfig):
     verbose_name = "Gestión de Periodos Académicos"
 
     def ready(self):
-        # Importa señales aquí si las usas (en el futuro)
+
         import apps.periods.signals  # crea el archivo si será usado
