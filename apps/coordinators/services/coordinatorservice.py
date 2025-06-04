@@ -24,7 +24,7 @@ class CoordinatorService:
         user = coordinator.user
 
         # Validación de duplicidad de documento
-        if Coordinator.objects.exclude(id=coordinator.document_number).filter(document_number=data['document_number']).exists():
+        if Coordinator.objects.exclude(id=coordinator.id).filter(document_number=data['document_number']).exists():
             raise ValidationError("Ya existe un coordinador con este número de documento.")
 
         # Actualizar datos del usuario

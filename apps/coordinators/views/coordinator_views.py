@@ -1,27 +1,39 @@
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
+from django.views.generic import DetailView, UpdateView
+
 from apps.coordinators.models.coordinator import Coordinator
 from apps.coordinators.forms.coordinator_form import CoordinatorForm
 from apps.shared.decorators.role_required import role_required
 
 
-@role_required(['COORDINATOR'])
-def coordinator_detail(request):
-    coordinator = get_object_or_404(Coordinator, user=request.user)
-    return render(request, 'coordinators/coordinator_detail.html', {'coordinator': coordinator})
+@method_decorator(role_required(['COORDINATOR']), name='dispatch')
+class CoordinatorDetailView(DetailView):
+    model = Coordinator
+    template_name = 'coordinators/coordinator_detail.html'
+
+    def get_object(self):
+        return Coordinator.objects.get(user=self.request.user)
 
 
-@role_required(['COORDINATOR'])
-def coordinator_update(request):
-    coordinator = get_object_or_404(Coordinator, user=request.user)
+@method_decorator(role_required(['COORDINATOR']), name='dispatch')
+class CoordinatorUpdateView(UpdateView):
+    model = Coordinator
+    form_class = CoordinatorForm
+    template_name = 'coordinators/coordinator_form.html'
 
-    if request.method == 'POST':
-        form = CoordinatorForm(request.POST, instance=coordinator, user=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Información actualizada correctamente.")
-            return redirect('coordinators:detail')
-    else:
-        form = CoordinatorForm(instance=coordinator, user=request.user)
+    def get_object(self):
+        return Coordinator.objects.get(user=self.request.user)
 
-    return render(request, 'coordinators/coordinator_form.html', {'form': form})
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user  # Pasamos el usuario al formulario
+        return kwargs
+
+    def form_valid(self, form):
+        messages.success(self.request, "Información actualizada correctamente.")
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return redirect('coordinators:detail').url
