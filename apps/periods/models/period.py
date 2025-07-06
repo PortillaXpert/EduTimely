@@ -11,7 +11,9 @@ class Period(models.Model):
     name = models.CharField(max_length=100)
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
-    period_length = models.PositiveIntegerField(choices=PeriodLength.choices, default=PeriodLength.THREE_MONTHS)
+    period_length = models.PositiveIntegerField(
+        choices=PeriodLength.choices,
+        default=PeriodLength.THREE_MONTHS)
     is_active = models.BooleanField(default=True)
 
     def validate_period_overlap(self):
