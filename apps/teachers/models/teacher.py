@@ -9,6 +9,15 @@ class Teacher(models.Model):
         FOREIGN_ID = 'FID', 'Foreign ID Card'
         PASSPORT = 'PASS', 'Passport'
         VISA = 'VISA', 'Visa'
+
+    class Academic_level(models.TextChoices):
+        PROFESIONAL = 'PROF', 'Profesional Degree'
+        TECHNICAL = 'TECH', 'Technical Training'
+
+    class Contract_type(models.TextChoices):
+        TENURED = 'TEN', 'Tenured (Permanent Staff)'
+        CONTRACTUAL = 'CON', 'Contract-based Position'
+
     name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     id_type = models.CharField(
@@ -19,18 +28,11 @@ class Teacher(models.Model):
         max_length=12,
         unique=True)
 
-    class Academic_level(models.TextChoices):
-        PROFESIONAL = 'PROF', 'Profesional Degree'
-        TECHNICAL = 'TECH', 'Technical Training'
-
     academic_level = models.CharField(
         Academic_level.choices,
         max_length=5,
         default=Academic_level.PROFESIONAL)
 
-    class Contract_type(models.TextChoices):
-        TENURED = 'TEN', 'Tenured (Permanent Staff)'
-        CONTRACTUAL = 'CON', 'Contract-based Position'
     contract_type = models.CharField(
         Contract_type.choices,
         max_length=5,
