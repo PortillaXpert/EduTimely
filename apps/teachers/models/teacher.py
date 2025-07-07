@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from apps.users.models import User
@@ -41,6 +42,18 @@ class Teacher(models.Model):
     academic_area = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def validate_tech_contract(self):
+        if self.academic_level == self.Academic_level.TECHNICAL and self.contract_type == self.Contract_type.TENURED:
+            raise ValidationError('Only professional have tenure contracts.')
+
+    def clean(self):
+        super().clean()
+        self.validate_tech_contract()
+
+    def save(self, *args, **kwargs):
+        super().full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.user.username} - {self.academic_area}'
