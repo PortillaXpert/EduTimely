@@ -32,7 +32,7 @@ class Schedule(models.Model):
     class Meta:
         verbose_name = 'Schedule'
         verbose_name_plural = "Schedules"
-        unique_together = ('environment','teacher', 'program')
+
 
     def clean(self):
         super().clean()
