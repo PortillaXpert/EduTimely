@@ -1,8 +1,5 @@
-import datetime
-
 from django import forms
 from django.utils import timezone
-
 from apps.periods.models.period import Period
 
 
@@ -43,31 +40,9 @@ class PeriodForm(forms.ModelForm):
         self.fields['is_active'].widget.template_name = 'widgets/checkbox_input.html'
 
     def clean_start_date(self):
-
-
         start_date = self.cleaned_data.get('start_date')
         if self.instance.pk is None and start_date < timezone.now().date():
             raise forms.ValidationError(
                 "The start date cannot be earlier than the current date when creating a new academic period."
             )
         return start_date
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        if instance.start_date and instance.period_length:
-            months = instance.period_length
-            new_year = instance.start_date.year
-            new_month = instance.start_date.month + months
-            new_day = instance.start_date.day
-
-            while new_month > 12:
-                new_month -= 12
-                new_year += 1
-
-
-            last_day_of_month = (datetime.date(new_year, new_month % 12 or 12, 1) - datetime.timedelta(days=1)).day
-            instance.end_date = datetime.date(new_year, new_month % 12 or 12, min(new_day, last_day_of_month))
-
-        if commit:
-            instance.save()
-        return instance
